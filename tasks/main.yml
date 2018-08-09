@@ -11,10 +11,12 @@
 - name: NODEJS | DOWNLOAD
   get_url: dest=/opt/node.tar.gz url=http://nodejs.org/dist/{{ version }}/node-{{ version }}-linux-{{ arch }}.tar.gz
   when: node_check|failed
+  become: yes
 
 - name: NODEJS | UNPACK
   unarchive: src=/opt/node.tar.gz dest=/opt copy=no
   when: node_check|failed
+  become: yes
 
 - name: NODEJS | LINK BINARIES
   file: dest="/usr/bin/{{ item}}" src="/opt/node-{{ version }}-linux-{{ arch }}/bin/{{ item }}" state=link
@@ -22,7 +24,9 @@
   with_items:
    - npm
    - node
+  become: yes
 
 - name: NODEJS | INSTALL PACKAGES
   npm: name={{ item }} global=yes state=present
   with_items: "{{ install }}"
+  become: yes
